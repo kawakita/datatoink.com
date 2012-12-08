@@ -1,0 +1,43 @@
+/*#main {
+  position: relative;
+  right: 0;
+  left: 0;
+  margin: 0;
+  margin-top: 100px;
+  padding: 0;
+  vertical-align: middle;
+  background: rgba(238, 238, 238, 0.9);
+  height: 300px;
+}
+
+.tiles {
+  padding: 40px;
+  border: 1px solid #E1E1E1; 
+  text-align: center;
+}
+
+.learn {
+  float: left;
+  width: 39%;
+  height: 71%;
+}
+
+.visualize {
+  float: right;
+  height: 22%;
+  width: 43%;
+}
+
+.present {
+  float: right;
+  height: 22%;
+  width: 43%;
+}
+
+.hero-unit p {
+  font-size: 24px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+*/

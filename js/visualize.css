@@ -1,0 +1,60 @@
+body {
+    background: #ffffff;
+    font: 100.01% "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #000;
+    margin: 10px 0 0 0;
+    padding: 0;
+    text-align: center;
+}
+p {
+    font-size: 14px;
+}
+#wrapper {
+    margin: 0 auto;
+    width: 1000px;
+}
+#options {
+    float: left;
+    text-align: left;
+}
+.clear {
+    clear: both;
+}
+#data {
+    float: left;
+    text-align: left;
+}
+#holder {
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -webkit-box-shadow: 0 1px 3px #666;
+    width: 640px;
+    height: 400px;
+    margin: 0 auto;
+}
+path {
+    fill: #dddddd;
+}
+table {
+    border-spacing: 0px;
+}
+td {
+    padding: 0px;
+    margin: 0px;
+    border: 0px none;
+}
+tr {
+    padding: 0px;
+    margin: 0px;
+    border: 0px none;
+}
+#data input {
+    padding: 0px;
+    margin: 0px;
+}
+input[name=title] {
+    width: 488px;
+}
+#data input[name=series], input[name=seriesname] {
+    width: 40px;
+}
