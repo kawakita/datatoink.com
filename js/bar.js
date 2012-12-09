@@ -116,7 +116,8 @@ $(document).ready(function() {
 
         numcol = $('#data input[name=numcol]').val();
 
-        if (colorscopy[0].colors.length < numcol) {
+        console.log("changing numcol", numseries);
+        /*if (colorscopy[0].colors.length < numcol && numseries == 1) {
             var first = colors[0].colors[0];
             colors[0].colors = [];
             for (var i = 0; i < numcol; i++)
@@ -126,7 +127,7 @@ $(document).ready(function() {
         }
         else {
             colors[0].colors = colorscopy[0].colors;
-        }
+        }*/
 
 
         if (!$.isNumeric(numcol))
@@ -203,6 +204,18 @@ $(document).ready(function() {
         while (--collen >= 0)
             series_array[numseries-1].push(0);
         numseriesold = numseries;
+        if (colorscopy[0].colors.length < numcol && numseries == 1) {
+            var first = colors[0].colors[0];
+            colors[0].colors = [];
+            for (var i = 0; i < numcol; i++)
+            {
+                colors[0].colors.push(first);
+            }
+        }
+        else {
+            colors[0].colors = colorscopy[0].colors;
+        }              
+        
         redraw();
     });
 
@@ -326,7 +339,9 @@ $(document).ready(function() {
                 }
                 numcol = columnname_array.length;
                 $('#data input[name=numcol]').val(numcol);
-                if (colorscopy[0].colors.length < numcol) {
+                
+                console.log("csving numseries",numseries);
+                if (colorscopy[0].colors.length < numcol && numseries == 1) {
                     var first = colors[0].colors[0];
                     colors[0].colors = [];
                     for (var i = 0; i < numcol; i++)
@@ -336,7 +351,7 @@ $(document).ready(function() {
                 }
                 else {
                     colors[0].colors = colorscopy[0].colors;
-                }                
+                }              
 
                 series_array = [];
                 for (var i = hasheader; i < numseries + hasheader; i++)
