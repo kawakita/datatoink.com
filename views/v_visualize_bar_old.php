@@ -1,17 +1,19 @@
 
-<h2>Line Chart</h2>
+<h2>Bar Chart</h2>
 <hr>
 <div id="holder"></div>
 <div id="options">
     <ul class="nav nav-tabs primary">
         <li><a href="#canvas" data-toggle="tab">Canvas</a></li>
         <li><a href="#data" data-toggle="tab">Data</a></li>
-        <li><a href="#save" data-toggle="tab">Save</a></li>
+        <li><a href="#color" data-toggle="tab">Color</a></li>        
     </ul>
     <div class="tab-content">       
         <div class="tab-pane" id="canvas">
             <ul class="nav nav-tabs secondary">
                 <li><a href="#canvastitle" data-toggle="tab">Title</a></li>
+                <li><a href="#canvasdimensions" data-toggle="tab">Dimensions</a></li>
+                <li><a href="#canvaspadding" data-toggle="tab">Padding</a></li>
             </ul> 
             <div class="tab-content">
                 <div class="tab-pane active" id="canvastitle">
@@ -20,6 +22,21 @@
                     <br>
                     <span class="fieldname">Subtitle</span> 
                     <input type="text" name="subtitle" placeholder="Subtitle"> 
+                </div>
+                <div class="tab-pane" id="canvasdimensions">
+                    <span class="fieldname">Width</span> 
+                    <input type="text" name="width" placeholder="Width">
+                    <br>
+                    <span class="fieldname">Height</span> 
+                    <input type="text" name="height" placeholder="Height"> 
+                </div>
+                <div class="tab-pane" id="canvaspadding">
+                    <span class="fieldname">Padding</span> 
+                    <input type="text" name="padding" placeholder="Padding">
+                    <br>
+                    <span class="fieldname">Extra Bottom Padding</span> 
+                    <input type="text" name="bottom" placeholder="Extra Bottom Padding"> 
+
                 </div>
             </div>           
         </div>
@@ -32,27 +49,13 @@
                 <div class="tab-pane active" id="datatable">
                     <input type="number" name="numcol" min="1" placeholder="# columns"> 
                     <span class="fieldname">Columns</span>
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>                    
-                    <!-- linepts vs. line vs. pts vs. smooth button -->
+                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    <!-- stacked vs. grouped button -->
                     <span class="btn-toolbar">
-                      <span class="btn-group lineoptions">
-                        <a class="btn active" id="linepts"><img class="btn-img" src="/img/glyphicons/png/glyphicons_097-1_vector_path_linepts.png" alt="lines and pts"></a>
-                        <a class="btn" id="line"><img class="btn-img" src="/img/glyphicons/png/glyphicons_097-1_vector_path_line.png" alt="lines only"></a>
-                        <a class="btn" id="pts"><img class="btn-img" src="/img/glyphicons/png/glyphicons_097-1_vector_path_pts.png" alt="pts only"></a>
-                        <a class="btn" id="smoothpts"><img class="btn-img" src="/img/glyphicons/png/glyphicons_098-1_vector_path_curvepts.png" alt="smooth lines and pts"></a>
-                        <a class="btn" id="smooth"><img class="btn-img" src="/img/glyphicons/png/glyphicons_098-1_vector_path_curve.png" alt="smooth lines only"></a>
+                      <span class="btn-group">
+                        <a class="btn" id="stacked"><i class="icon-align-justify"></i></a>
+                        <a class="btn" id="grouped"><i class="icon-align-left"></i></a>
                       </span>
-                    </span>
-                    <!-- end -->                    
-                    <br>
-                    <input type="number" name="numseries" min="1" max="5" placeholder="# series"> 
-                    <span class="fieldname">Series</span>                    
-                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    <!-- draggable buttons -->                    
-                    <span class="draggable">
-                        <a class="btn btn-outline dragx"><b>X</b></a>
-                        <a class="btn btn-outline dragy"><b>Y</b></a>
-                        &nbsp;&nbsp;&nbsp;
                     </span>
                     <!-- end -->
                     <table>
@@ -61,28 +64,24 @@
                                 <input type="text" name="columnname">
                             </td>
                         </tr>
-                        <tr class="obs">
+                        <tr class="series">
                             <td class="col">
-                                <input type="text" name="obs" value="0">
+                                <input type="text" name="series" value="0">
                             </td>
                         </tr>
                     </table>
                     <!-- add, remove, clear button -->                    
                     <span class="btn-toolbar">
                       <span class="btn-group">                    
-                            <input class="btn" type="button" id="add-obs" value="Add Observation">
-                            <input class="btn" type="button" id="remove-obs" value="Remove Observation">
+                            <input class="btn" type="button" id="add-series" value="Add Series">
+                            <input class="btn" type="button" id="remove-series" value="Remove Series">
                             <input class="btn" type="button" id="refresh-button" value="Clear">
                         </span>
                     </span>  
                 </div>
                 <div class="tab-pane" id="datacsv">
                     <span class="fieldname">
-                        Row Has Name as First Element &nbsp;<input type="checkbox" name="hasheader" checked="yes">
-                        &nbsp;&nbsp;
-                        <!--Wide Format &nbsp;<input type="radio" name="csvformat" checked="yes">
-                        &nbsp;&nbsp;
-                        Long Format &nbsp;<input type="radio" name="csvformat">-->
+                        Includes Header Row &nbsp;<input type="checkbox" name="hasheader" checked="yes">
                     </span>
                     <br>
                     <div id="textarea">
@@ -99,20 +98,34 @@
                 </div>
             </div>
         </div>
-        <div class="tab-pane" id="save">
+        <div class="tab-pane" id="color">
+            <ul class="nav nav-tabs secondary">
+                <li><a href="#nominal" data-toggle="tab">Nominal</a></li>
+                <li><a href="#ordinal" data-toggle="tab">Ordinal</a></li>
+                <li><a href="#quantitative" data-toggle="tab">Quantitative</a></li>
+            </ul> 
             <div class="tab-content">
-                <br>
-                <? if($user): ?>
+                <div class="tab-pane active" id="nominal">
+                    <span class="fieldname">Title</span> 
+                    <input type="text" name="title" placeholder="Title">
+                    <br>
+                    <span class="fieldname">Subtitle</span> 
+                    <input type="text" name="subtitle" placeholder="Subtitle"> 
+                </div>
+                <div class="tab-pane" id="ordinal">
+                    <span class="fieldname">
+                        Auto Width
+                        <input type="checkbox" name="autowidth" checked="yes">
+                    </span> 
+                </div>
+                <div class="tab-pane" id="quantitative">
+                    <span class="fieldname">
+                        Auto Padding
+                        <input type="checkbox" name="autopadding" checked="yes">
+                    </span> 
 
-                <form method='POST' action='/visualize/save' id="saveform">
-                    <span class="fieldname">Save Title As</span> 
-                    <input type="text" name="title" placeholder="Name">                 
-                    <button class="btn" type="submit" id="save">Save</button>
-                </form>
-
-                <? else: ?>
-                    <p>Please log in or sign up to save your graphs.</p>
-                <? endif; ?>
-        </div>        
+                </div>
+            </div>           
+        </div>
     </div>
 </div>

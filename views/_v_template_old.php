@@ -36,8 +36,14 @@
           <!-- navbar content -->
           <ul class="nav">
             <li class="brand"></li>
+            <a href="/learn">
+              <li class="brand">Learn</li>
+            </a>
             <a href="/visualize">
               <li class="brand">Visualize</li>
+            </a>
+            <a href="/present">
+              <li class="brand">Present</li>
             </a>
           </ul>
 

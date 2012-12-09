@@ -58,7 +58,7 @@ tr {
 input[name=title],input[name=subtitle] {
     width: 300px;
 }
-input[name=numcol] {
+input[name=numcol], input[name=numseries] {
     width: 40px;
     text-align: right;
 }
@@ -124,18 +124,19 @@ i.icon-share-alt {
     float: left;
 }
 
-#dragx, #dragy {
+.dragx, .dragy {
     width: 24px;
 }
 
-#dragx {
+.dragx {
     border: 2px solid rgba(0,136,204,0.6);
-    /*#08c*/
+    /*#0088cc*/
 }
 
-#dragy {
-    border: 2px solid rgba(91,183,91,0.6);
-    /*#5bb75b*/
+.dragy {
+    border: 2px solid rgba(0,65,204,0.6);
+    /* #006dCC */
+    /*rgba(91,183,91,0.6) #5bb75b*/
 }
 
 footer .wrapper {

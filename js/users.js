@@ -103,11 +103,12 @@ $(document).ready(function() {
 			{
 				if (response[0] == "success")
 				{
-					$('#loginmodal').modal('hide');
-					$('.nav.pull-right').html("<li class='brand rightside' style='color:#999999;''>Hi, " + response[1] + "!</li><a href=''><li class='brand rightside'>Log Out</li></a>");
+					$('#signupmodal').modal('hide');
+					$('#loginmodal').modal('show');
+
 				}
 				else {
-					$('.modal-body p.error').text('Invalid log in. Please try again.');
+					$('.modal-body p.error').text('That account already exists. Please try again.');
 				}
 			}
 		});

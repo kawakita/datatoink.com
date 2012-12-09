@@ -6,13 +6,12 @@
     <ul class="nav nav-tabs primary">
         <li><a href="#canvas" data-toggle="tab">Canvas</a></li>
         <li><a href="#data" data-toggle="tab">Data</a></li>
+        <li><a href="#save" data-toggle="tab">Save</a></li>        
     </ul>
     <div class="tab-content">       
         <div class="tab-pane" id="canvas">
             <ul class="nav nav-tabs secondary">
                 <li><a href="#canvastitle" data-toggle="tab">Title</a></li>
-                <li><a href="#canvasdimensions" data-toggle="tab">Dimensions</a></li>
-                <li><a href="#canvaspadding" data-toggle="tab">Padding</a></li>
             </ul> 
             <div class="tab-content">
                 <div class="tab-pane active" id="canvastitle">
@@ -21,19 +20,6 @@
                     <br>
                     <span class="fieldname">Subtitle</span> 
                     <input type="text" name="subtitle" placeholder="Subtitle"> 
-                </div>
-                <div class="tab-pane" id="canvasdimensions">
-                    <span class="fieldname">
-                        Auto Width
-                        <input type="checkbox" name="autowidth" checked="yes">
-                    </span> 
-                </div>
-                <div class="tab-pane" id="canvaspadding">
-                    <span class="fieldname">
-                        Auto Padding
-                        <input type="checkbox" name="autopadding" checked="yes">
-                    </span> 
-
                 </div>
             </div>           
         </div>
@@ -94,6 +80,21 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="tab-pane" id="save">
+            <div class="tab-content">
+                <br>
+                <? if($user): ?>
+
+                <form method='POST' action='/visualize/save' id="saveform">
+                    <span class="fieldname">Save Title As</span> 
+                    <input type="text" name="title" placeholder="Name">                 
+                    <button class="btn" type="submit" id="save">Save</button>
+                </form>
+
+                <? else: ?>
+                    <p>Please log in or sign up to save your graphs.</p>
+                <? endif; ?>
         </div>
     </div>
 </div>

@@ -1,6 +1,5 @@
 $(document).ready(function() {
     var padding = 20;
-    var top = 10;
     var bottom = 20;
     var w = $('#holder').css('width');
     var h = $('#holder').css('height');
@@ -9,21 +8,26 @@ $(document).ready(function() {
     console.log(w, h);
 
     var r = Raphael(document.getElementById("holder")),
-        titletxtattr = { font: "18px 'Helvetica Neue'" },
-        subtitletxtattr = { font: "14px 'Helvetica Neue'" },
+        titletxtattr = { font: "16px 'Helvetica Neue'" },
         labeltxtattr = { font: "10px 'Helvetica Neue'" },
         vallabeltxtattr = { font: "11px 'Helvetica Neue'" };
 
+    // draw baseline
 
     // colors array
     var colors = [
         {colors:["#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#D9D9D9","#BC80BD","#CCEBC5","#FFED6F"]}
     ];
-    var colorscopy = [
-        {colors:["#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#D9D9D9","#BC80BD","#CCEBC5","#FFED6F"]}
-    ];
     console.log(colors[0].colors);
     var colorindex = 0;
+
+    // fill in defaults for width and height
+    $('#canvas input[name=width]').val(w);
+    $('#canvas input[name=height]').val(h);
+
+    // fill in defaults for padding
+    $('#canvas input[name=padding]').val(padding);
+    $('#canvas input[name=bottom]').val(bottom);
 
     // set title
     var title = "Average Rainfall in Boston (inches)";
@@ -34,17 +38,6 @@ $(document).ready(function() {
     $('#canvas input[name=title]').keyup(function() {
         title = $('#canvas input[name=title]').val();
         $('text:first tspan').text(title);
-    });
-
-    // set subtitle
-    var subtitle = "2011";
-    $('#canvas input[name=subtitle]').val(subtitle);
-    r.text(w/2, padding*2, subtitle).attr(subtitletxtattr);
-
-    // allow title to be changed
-    $('#canvas input[name=subtitle]').keyup(function() {
-        subtitle = $('#canvas input[name=subtitle]').val();
-        $('text:eq(1) tspan').text(subtitle);
     });
 
     // set default value for bar
@@ -86,6 +79,14 @@ $(document).ready(function() {
     redraw();
     drawLabels();
 
+    // canvas settings
+    $('#canvas input[name=width]').change(function() {
+        w = $(this).val();
+        
+        redraw();
+        drawLabels();
+    });
+
     // clear button
     $('#refresh-button').click(function() {
         for (var i = 0; i < numseries; i++)
@@ -100,11 +101,8 @@ $(document).ready(function() {
             columnname_array[j] = "";
         }
         title = "Title";
-        $('#canvas input[name=title]').val(title);
+        $('#options input[name=title]').val(title);
         $('text:first tspan').text(title);
-        subtitle = "-";
-        $('#canvas input[name=subtitle]').val(subtitle);
-        $('text:eq(1) tspan').text(subtitle);
         redraw();
         $('#data input[name=series]').val(0);
         $('#data input[name=columnname]').val("");
@@ -115,19 +113,6 @@ $(document).ready(function() {
     $('#data input[name=numcol]').change(function() {
 
         numcol = $('#data input[name=numcol]').val();
-
-        if (colorscopy[0].colors.length < numcol) {
-            var first = colors[0].colors[0];
-            colors[0].colors = [];
-            for (var i = 0; i < numcol; i++)
-            {
-                colors[0].colors.push(first);
-            }
-        }
-        else {
-            colors[0].colors = colorscopy[0].colors;
-        }
-
 
         if (!$.isNumeric(numcol))
         {
@@ -323,17 +308,6 @@ $(document).ready(function() {
                 }
                 numcol = columnname_array.length;
                 $('#data input[name=numcol]').val(numcol);
-                if (colorscopy[0].colors.length < numcol) {
-                    var first = colors[0].colors[0];
-                    colors[0].colors = [];
-                    for (var i = 0; i < numcol; i++)
-                    {
-                        colors[0].colors.push(first);
-                    }
-                }
-                else {
-                    colors[0].colors = colorscopy[0].colors;
-                }                
 
                 series_array = [];
                 for (var i = hasheader; i < numseries + hasheader; i++)
@@ -926,64 +900,5 @@ $(document).ready(function() {
         return t;
     }
 
-    $('a[href=#save]').click(function() {
-        $('#save input[name=title]').val(title);
-    });
-
-    $('#save input[name=title]').keyup(function() {
-        title = $('#save input[name=title]').val();
-        $('text:first tspan').text(title);
-        $('#canvas input[name=title]').val(title);
-    });
-
-
-    $('#saveform').submit(function() {
-
-        var action = $('#saveform').attr('action');
-        console.log(action);
-
-        var series_array_string = "";
-        for (var i = 0; i < series_array.length; i++)
-        {
-            series_array_string += "[" + series_array[i].toString() + "]"; 
-            if (i < series_array.length - 1)
-                series_array_string += ",";
-        }
-
-        var columnname_array_string = "[" + columnname_array.toString() + "]";
-
-        var form_data = {
-            type: "bar",
-            series_array: series_array_string,
-            columnname_array: columnname_array_string,
-            header: hasheader,
-            title: $('#canvas input[name=title]').val(),
-            subtitle: $('#canvas input[name=subtitle]').val(),
-            numcol: parseInt($('#data input[name=numcol]').val()),
-            numseries: 0,
-            structure: stacked,
-            seriesx_array: -1,
-            seriesy_array: -1
-        };
-
-        $.ajax({
-            type: "POST",
-            url: action,
-            data: form_data,
-            dataType: "json",
-            success: function(response)
-            {
-                if (response[0] == "success")
-                {
-                    alert("success");
-                }
-                else {
-                    alert("failure");
-                    //$('.modal-body p.error').text('That account already exists. Please try again.');
-                }
-            }
-        });
-        return false;  
-    });      
 
 });

@@ -39,13 +39,28 @@ class users_controller extends base_controller {
 		# More data we want stored with the user	
 		$_POST['created']  = Time::now();
 		$_POST['modified'] = Time::now();
-		//$_POST['token']    = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
-		
-		# Insert this user into the database 
-		$user_id = DB::instance(DB_NAME)->insert("users", $_POST);
-		
+		$_POST['token']    = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
+				
 		# For now, just confirm they've signed up - we can make this fancier later
-	    Router::redirect("/users/login/signup");
+	    //Router::redirect("/users/login/signup");
+
+	    # Search the db for this email
+	    $q = "SELECT email 
+	        FROM users 
+	        WHERE email = '".$_POST['email']."'";
+
+		$email = DB::instance(DB_NAME)->select_rows($q);
+
+		if ($email == NULL)
+		{
+			$returnArray = Array("success", 0);
+			# Insert this user into the database 
+			$user_id = DB::instance(DB_NAME)->insert("users", $_POST);
+		}
+		else
+			$returnArray = Array("failure", 0);
+
+        echo json_encode($returnArray);           
 
 	}	
 

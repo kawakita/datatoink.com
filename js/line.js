@@ -9,6 +9,7 @@ $(document).ready(function() {
 
     var r = Raphael(document.getElementById("holder")),
         titletxtattr = { font: "16px 'Helvetica Neue'" },
+        subtitletxtattr = { font: "14px 'Helvetica Neue'" },        
         labeltxtattr = { font: "10px 'Helvetica Neue'" },
         vallabeltxtattr = { font: "11px 'Helvetica Neue'" };
 
@@ -16,9 +17,11 @@ $(document).ready(function() {
 
     // colors array
     var colors = [
-        {colors:["#8DD3C7","#FFFFB3","#BEBADA","#FB8072","#80B1D3","#FDB462","#B3DE69","#FCCDE5","#D9D9D9","#BC80BD","#CCEBC5","#FFED6F"]}
+        {colors:["#0088cc","#9900cc","#5bb75b","#faa732","#da4f49"]}
     ];
-    console.log(colors[0].colors);
+    var colors2 = [
+        {colors:["#006dCC","#5200cc","#306130","#fa8532","#d91c14"]}
+    ];
     var colorindex = 0;
 
     // set title
@@ -32,35 +35,57 @@ $(document).ready(function() {
         $('text:first tspan').text(title);
     });
 
+    // set subtitle
+    var subtitle = "2011";
+    $('#canvas input[name=subtitle]').val(subtitle);
+    r.text(w/2, padding*2, subtitle).attr(subtitletxtattr);
+
+    // allow title to be changed
+    $('#canvas input[name=subtitle]').keyup(function() {
+        subtitle = $('#canvas input[name=subtitle]').val();
+        $('text:eq(1) tspan').text(subtitle);
+    });
+
     // set default value for observations
     $('#data input[name=obs]').val(0);
 
-    // get html of series (columnname and pair) so can append later
+    // get html of header and obs so can append later
     var header = $('#data tr:first');
     var headerhtml = header.html();
     var obs = $('#data tr:last');
     var obshtml = obs.html();
 
     // set up chart with example data
-    var columnname_array = ['Month','Rainfall']
-    var series_array = [[1,2,3],[3.36, 3.38, 4.32]];
+    var columnname_array = ['Month',"Rainfall"];
+    var series_array = [[1,2,3,4,5,6,7,8,9,10,11,12],[3.36, 3.38, 4.32, 3.74, 3.49, 3.68, 3.43, 3.35, 3.44, 3.94, 3.99, 3.78],[1,2,3,4,5,6,7,8,9,10,11,12],[3.36, 3.38, 4.32, 3.74, 3.49, 3.68, 3.43, 3.35, 3.44, 3.94, 3.99, 3.78]];
 
     // number of col
     var numcol = series_array.length;
     var numcolold = series_array.length;
     $('#data input[name=numcol]').val(numcol);
 
+    // number of series
+    var numseries = 1;
+    var numseriesold = 1;
+    $('#data input[name=numseries]').val(numseries);   
+
+    var series = $('.draggable');
+    var serieshtml = series.html(); 
+    $('.draggable a').addClass('series0');
+
     // number of obs
     var obs_len = series_array[0].length;
     var numobs = obs_len;
     var numobsold = obs_len;
 
+    // grow from one column
     while($('#data .columnname td').length < numcol)
     {
         header.append(headerhtml);
         obs.append(obshtml);
     }
 
+    // grow from one obs
     var obshtml2 = $('#data tr:eq(1)').html();
     while($('#data tr.obs').length < numobs)
     {
@@ -71,7 +96,13 @@ $(document).ready(function() {
     setInputToArray(series_array[0], "obs", 1); // 1 b/c 1st child
     setInputToArray(series_array[1], "obs", 2); // 2 b/c 2nd child
 
-    //redraw();
+    // indices for which column is x and y
+    var indices = [[0,1]];
+    // initial draw options
+    var drawoptions = { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: false, colors: colors[colorindex].colors };
+    var lineoptionindex = 0;
+
+    redraw();
     
     //drawLabels();
 
@@ -91,53 +122,15 @@ $(document).ready(function() {
         title = "Title";
         $('#options input[name=title]').val(title);
         $('text:first tspan').text(title);
-        //redraw();
+        subtitle = "-";
+        $('#canvas input[name=subtitle]').val(subtitle);
+        $('text:eq(1) tspan').text(subtitle);        
+        redraw();
         $('#data input[name=obs]').val(0);
         $('#data input[name=columnname]').val("");
         //drawLabels();
     }); 
-       
-    
-    // allow dynamic changing of number of columns
-    $('#data input[name=numcol]').change(function() {
 
-        numcol = $('#data input[name=numcol]').val();
-
-        if (!$.isNumeric(numcol))
-        {
-            $(this).val(numcolold);
-            numcol = numcolold;
-        }
-        numcolold = numcol;
-
-        if (numcol < 2)
-        {
-            $('#data input[name=numcol]').val(2);
-            numcol = 2;
-        }
-
-        while($('#data .columnname td').length < numcol)
-        {
-            var newheader = $('#data tr:eq(0)');
-            var newseries = $('#data tr.obs');
-            newheader.append(headerhtml);
-            columnname_array.push("");
-
-            newseries.append(obshtml);
-            series_array.push([]);
-        }
-
-        while($('#data .columnname td').length > numcol)
-        {
-            $('#data .columnname td:last').remove();
-            columnname_array.pop();
-            $('#data tr.obs td:last-child').remove();
-            
-            series_array.pop();            
-        }
-        //redraw();
-    });
-    
     // allow dynamic changing of values
     $(document).on('change','#data input[name=obs]',function() {
         // get index
@@ -151,7 +144,7 @@ $(document).ready(function() {
             $(this).focus();
         }
         series_array[colindex][obsindex] = $(this).val()-0;
-        //redraw();
+        redraw();
     });
 
     // allow dynamic changing of labels
@@ -202,111 +195,202 @@ $(document).ready(function() {
         //redraw();
     });
 
-    var indices = [0,1];
-    // set x and y columnname sborder
-    $('#dragx, #dragy').each(function(index) {
-        var index = $('span.draggable a').index($(this));
-        var oldthiscss = $(this).css('border');
-        $('tr.columnname input[name=columnname]:eq('+index+')').css('border',oldthiscss);
+    // set x and y columnname order
+    // using indices array and draggable/droppable
+
+    // droppable options
+
+    var seriesindex = 0, xyindex = 0, oldthis = 0, oldthiscss = 0;
+
+    var drgOptions = { 
+        revert: true, 
+        snap: "input[name=columnname]",
+        drag: function(event, ui) {
+            // get xyindex of button
+            seriesindex = Math.floor($('span.draggable a').index(this)/2);
+            xyindex = $('span.draggable a').index(this) % 2;
+            // get handle and border
+            oldthis = $(this); 
+            oldthiscss = $(this).css('border');                               
+            $(this).removeClass('disabled');
+        }
+    };  
+
+    var drpOptions = {
+        drop: function(event, ui) { 
+            // remove border of that color
+            $('tr.columnname input[name=columnname]:eq('+indices[xyindex]+')').css('border','none');                
+            // get column index
+            var headerindex = $('tr.columnname input[name=columnname]').index(this);
+            console.log("headerindex",headerindex);
+            indices[seriesindex][xyindex] = headerindex;
+            // set to -1 excluding seriesindex
+            for (var i = 0; i < seriesindex; i++)
+            {
+                if (indices[i][0]==indices[seriesindex][xyindex])
+                {
+                    indices[i][0] = -1;               
+                    indices[i][1] = -1;               
+                } 
+                if (indices[i][1]==indices[seriesindex][xyindex])
+                {
+                    indices[i][1] = -1; 
+                    indices[i][0] = -1; 
+                }              
+            }
+            for (var i = seriesindex+1; i < numseries; i++)
+            {
+                if (indices[i][0]==indices[seriesindex][xyindex])
+                {
+                    indices[i][0] = -1;               
+                    indices[i][1] = -1;               
+                } 
+                if (indices[i][1]==indices[seriesindex][xyindex])
+                {
+                    indices[i][1] = -1; 
+                    indices[i][0] = -1; 
+                }              
+            }            
+
+            console.log("indices",indices);
+
+            $(this).css('border',oldthiscss);
+            $(oldthis).addClass('disabled');
+            redraw();
+        }
+    };  
+
+    // some droppable from first part of code above
+    $('tr.columnname input[name=columnname]').droppable(drpOptions);
+
+    // set initial x and y
+    $('.dragx, .dragy').each(function() {
+        xyindex = $('span.draggable a').index($(this));
+        oldthiscss = $(this).css('border');
+        $('tr.columnname input[name=columnname]:eq('+xyindex+')').css('border',oldthiscss);
         $(this).addClass('disabled');
     });
 
     // draggable x and y
-    // for when document is unchanged
     $(function() {
-        var index = 0, oldthis = 0, oldthiscss = 0;
-        $('#dragx, #dragy').draggable({ 
-            revert: true, 
-            snap: "input[name=columnname]",
-            drag: function(event, ui) {
-                // get index of button
-                index = $('span.draggable a').index(this);
-                // get handle and border
-                oldthis = $(this); 
-                oldthiscss = $(this).css('border');                               
-                $(this).removeClass('disabled');
-            }
-        });
-        $('tr.columnname input[name=columnname]').droppable({
-            drop: function(event, ui) { 
-                // remove border of that color
-                $('tr.columnname input[name=columnname]:eq('+indices[index]+')').css('border','none');                
-                // get column index
-                var headerindex = $('tr.columnname input[name=columnname]').index(this);
-                console.log("headerindex",headerindex);
-                indices[index] = headerindex;
-                if (indices[0]==indices[1])
-                {
-                    if (index == 0 )
-                        indices[1] = -1;
-                    else if (index == 1)
-                        indices[0] = -1;
-                }
-
-                console.log("indices",indices);
-
-                $(this).css('border',oldthiscss);
-                $(oldthis).addClass('disabled');
-            }
-        });
-    });
-    // again for when document changes
-    $(document).on('change',function() {
-        var index = 0, oldthis = 0, oldthiscss = 0;
-        $('#dragx, #dragy').draggable({ 
-            revert: true, 
-            snap: "input[name=columnname]",
-            drag: function(event, ui) {
-                // get index of button
-                index = $('span.draggable a').index(this);
-                // get handle and border
-                oldthis = $(this); 
-                oldthiscss = $(this).css('border');                               
-                $(this).removeClass('disabled');
-            }
-        });
-        $('tr.columnname input[name=columnname]').droppable({
-            drop: function(event, ui) { 
-                // remove border of that color
-                $('tr.columnname input[name=columnname]:eq('+indices[index]+')').css('border','none');                
-                // get column index
-                var headerindex = $('tr.columnname input[name=columnname]').index(this);
-                console.log("headerindex",headerindex);
-                indices[index] = headerindex;
-                if (indices[0]==indices[1])
-                {
-                    if (index == 0 )
-                        indices[1] = -1;
-                    else if (index == 1)
-                        indices[0] = -1;
-                }
-
-                console.log("indices",indices);
-
-                $(this).css('border',oldthiscss);
-                $(oldthis).addClass('disabled');
-            }
-        });
+        // drag
+        $('.dragx, .dragy').draggable(drgOptions);
+        // drop
+        $('tr.columnname input[name=columnname]').droppable(drpOptions);
     });
 
-/*
+    // must be global to allow for number input and increment/decrement
+    var colorcnt = 1;
+    // allow dynamic changing of number of series
+    $('#data input[name=numseries]').change(function() {
 
-    // new buttons for stroke and no stroke
+        numseries = $('#data input[name=numseries]').val();
 
-    // buttons to indicate active status of stacked vs. grouped bar charts
-    var stacked = 1;
-    $('a#stacked').click(function() {
+        if (!$.isNumeric(numseries))
+        {
+            $(this).val(numseriesold);
+            numseries = numseriesold;
+        }
+        numseriesold = numseries;
 
+        if (numseries < 1)
+        {
+            $('#data input[name=numseries]').val(1);
+            numseries = 1;
+        }
+        if (numseries > 5)
+        {
+            $('#data input[name=numseries]').val(5);
+            numseries = 5;
+        }
+
+        while($('#data span.draggable').length < numseries)
+        {
+            var newseries = $('#data span.draggable:last');
+            newseries.after("<span class='draggable'>"+serieshtml+"</span>");
+            //console.log("numdragx",$('#data span.draggable:last a.dragx').length);
+            $('#data span.draggable:last a.dragx').css('border-color',colors[0].colors[colorcnt]);
+            $('#data span.draggable:last a.dragy').css('border-color',colors2[0].colors[colorcnt]);
+            $('#data span.draggable:last .dragx').draggable(drgOptions);
+            $('#data span.draggable:last .dragy').draggable(drgOptions);
+            indices.push([]);
+            indices[colorcnt].push(-1);
+            indices[colorcnt].push(-1);
+            colorcnt++;
+        }
+
+        while($('#data span.draggable').length > numseries)
+        {
+            var xborder = $('#data span.draggable:last a.dragx').css('border-color');
+            var yborder = $('#data span.draggable:last a.dragy').css('border-color');
+            // remove series color from columnname row
+            $('tr.columnname input').each(function() {
+                if ($(this).css('border-color')==xborder)
+                    $(this).css('border','none').css('border-bottom','1px solid #CCC');
+                if ($(this).css('border-color')==yborder)
+                    $(this).css('border','none').css('border-bottom','1px solid #CCC');
+            });
+            $('#data span.draggable:last').remove();
+            indices.pop();
+            colorcnt--;
+        }
         redraw();
     });
 
-    $('a#grouped').click(function() {
+    // allow dynamic changing of number of columns
+    $('#data input[name=numcol]').change(function() {
 
+        numcol = $('#data input[name=numcol]').val();
+
+        if (!$.isNumeric(numcol))
+        {
+            $(this).val(numcolold);
+            numcol = numcolold;
+        }
+        numcolold = numcol;
+
+        if (numcol < 2)
+        {
+            $('#data input[name=numcol]').val(2);
+            numcol = 2;
+        }
+
+        while($('#data .columnname td').length < numcol)
+        {
+            var newheader = $('#data tr:eq(0)');
+            var newseries = $('#data tr.obs');
+            newheader.append(headerhtml);
+            columnname_array.push("");
+
+            newseries.append(obshtml);
+            series_array.push([]);
+        }
+
+        $('tr.columnname input[name=columnname]').droppable(drpOptions);
+
+        while($('#data .columnname td').length > numcol)
+        {
+            $('#data .columnname td:last').remove();
+            columnname_array.pop();
+            $('#data tr.obs td:last-child').remove();
+            
+            series_array.pop();            
+        }
         redraw();
     });
-*/
+
     // set default for csv textarea
-    $('#data textarea').text("1,2,3,4,5,6,7,8,9,10,11,12\n3.36,3.38,4.32,3.74,3.49,3.68,3.43,3.35,3.44,3.94,3.99,3.78");
+    //$('#data textarea').text("Month,1,2,3,4,5,6,7,8,9,10,11,12\nMonth,1,2,3,4,5,6,7,8,9,10,11,12\nRainfall,3.36,3.38,4.32,3.74,3.49,3.68,3.43,3.35,3.44,3.94,3.99,3.78");
+    //$('#data textarea').text("Month,1,2,3,4\nRainfall,3.36,3.38,4.32,3.74\nMonth,5,6,7,8\nRainfall,3.44,3.94,3.99,3.78\n");
+    $('#data textarea').text("0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99\n2.3076741497498006, 5.413758072769269, 8.905341342790052, 9.19273382681422, 11.204882151447237, 11.191750677768141, 12.451603798894212, 13.264062342233956, 15.619032478425652, 14.536740426905453, 13.008948127739131, 16.2030343641527, 15.18273730110377, 13.115157623542473, 15.933126962278038, 13.6734653217718, 13.490749191027135, 16.542469833046198, 17.95868431823328, 16.83528434857726, 20.596883164951578, 20.168550630798563, 19.968416915275156, 21.596772393444553, 19.85940631176345, 17.819617295637727, 17.02180598746054, 19.170473766746, 19.525327715324238, 22.11754317721352, 19.798186164349318, 16.871666755527258, 18.15921054733917, 16.931256966665387, 18.379712163703516, 17.9124160958454, 19.020648456877097, 18.698050779290497, 17.720887264003977, 19.676026295637712, 17.72716410434805, 19.636148432036862, 18.752176828449592, 20.826951388269663, 22.532807719428092, 25.4961234186776, 28.433078564936295, 29.98950546234846, 30.231186064658687, 33.678143593948334, 32.07094384403899, 29.149969091871753, 31.038967323722318, 33.27734321937896, 32.08250897214748, 31.59697617799975, 32.93487929366529, 35.12353730830364, 33.3057136554271, 32.5022844793275, 34.11659527872689, 34.556488652015105, 31.74939301935956, 30.55516411131248, 32.034810840152204, 33.49710752046667, 34.15613681264222, 34.1868598156143, 37.40723969787359, 36.31127357110381, 37.929209324065596, 39.300601633498445, 42.43891684967093, 46.01262474502437, 44.1581038790755, 46.02307988051325, 46.488594584865496, 50.187442985596135, 47.96253143181093, 45.65120674134232, 48.19309226493351, 45.245698493439704, 44.848831524839625, 46.07778807799332, 43.311783336801454, 41.728698323946446, 41.592504718573764, 42.91927164257504, 43.18530106567778, 46.25395599543117, 50.08432255964726, 50.86993291438557, 54.23207359132357, 54.438606831477955, 54.722264093579724, 58.64648145623505, 57.99467162229121, 58.45930971787311, 56.879207299789414, 54.663091828813776\n0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99\n150.59692058619112, 151.12590484507382, 148.54840276879258, 151.76785184070468, 152.34653792041354, 154.18518864409998, 156.29533723858185, 159.45521872863173, 162.1334514399059, 162.84345683921129, 165.86824006959796, 169.3195283806417, 166.6551299097482, 167.90112046874128, 167.5158772454597, 166.9475875031203, 169.07550212694332, 171.13905495870858, 173.59069762169383, 174.9017568216659, 175.0597126870416, 176.5156059609726, 173.1571889917832, 170.78766693989746, 173.3441219322849, 172.28187246387824, 170.21829744544812, 168.5896513131447, 165.87210658122785, 163.83736938005313, 166.8470066350419, 169.13872791384347, 169.74616317334585, 167.99340517353266, 167.44319274369627, 166.86864383728243, 168.44254058063962, 171.1145219639875, 169.80366290034726, 167.79605414741673, 169.04670051764697, 166.47226258390583, 166.4195843648631, 168.52685079048388, 169.99365638312884, 171.4351596776396, 168.00087018194608, 169.53976278798655, 172.5535134144593, 170.0111526993569, 166.74256469891407, 164.9823732096702, 167.50522302743047, 169.81541264709085, 168.00397873530164, 165.9040234668646, 164.1861728699878, 163.45045590982772, 166.77849350171164, 168.86750809918158, 171.1059802121017, 169.91033410979435, 167.44385695504025, 167.2008009837009, 168.03887143405154, 164.90116449119523, 162.3452123226598, 162.4947510843631, 161.61942858807743, 163.1098948221188, 160.91637335834093, 160.80128376744688, 161.81776049686596, 162.52523517399095, 160.93103626812808, 163.0791448103264, 166.31865662662312, 166.11443983903155, 168.38716325187124, 170.38546407059766, 173.50101235695183, 170.58198807341978, 173.0775448528584, 170.72145668719895, 168.30118883191608, 170.37488985038362, 171.66736692073755, 169.45484390924685, 168.03120047575794, 168.60627887956798, 168.06402070564218, 169.84320588689297, 171.57101331069134, 172.5570257739164, 173.6549796962645, 172.1368937031366, 170.45112828654237, 173.2644439029973, 176.22970588388853, 174.53619416430593");
+
+    var hasheader = 1;
+    $('#data input[name=hasheader]').click(function() {
+        if (this.checked)
+            hasheader = 1;
+        else
+            hasheader = 0;
+    });
 
     $('#update').click(function() {
         var csv_array = $.csv.toArrays($('#data textarea').val());
@@ -316,34 +400,32 @@ $(document).ready(function() {
             alert("No CSV data. Please try again.");
             $('#data textarea').focus();
         }
-        /*else
+        else
         {
             // array length
             var arraylength = csv_array[0].length;
             var same = 1;
 
-            // set numseries so numericlength accurate
-            if (hasheader)
-                numseries = csv_array.length - 1;
-            else
-                numseries = csv_array.length;
+            // set numcol
+            numcol = csv_array.length;
 
-            // numeric length
-            var numericlength = arraylength*numseries;
-            var numericcnt = 0;
-            var allnumeric = 1;
+            // update numcol field
+            $('#data input[name=numcol]').val(numcol);
+
+            var nonnumericcnt = 0;
+            var nonnumeric = 0;
 
             for (var i = 0; i < csv_array.length; i++)
             {
                 same = (csv_array[i].length==arraylength);
-                for (var j = 0; j < csv_array[i].length; j++) {
-                    if ($.isNumeric(csv_array[i][j]))
-                        numericcnt++;
+                // starts from 1 if hasheader, else 0
+                for (var j = hasheader; j < csv_array[i].length; j++) {
+                    if (!$.isNumeric(csv_array[i][j]))
+                        nonnumericcnt++;
                 }
             }
-            console.log("length",numericlength);
-            console.log("cnt",numericcnt);
-            allnumeric = (numericcnt==numericlength);
+            console.log("cnt",nonnumericcnt);
+            nonnumeric = (nonnumericcnt>0);
 
             // make sure each row has same number of elements
             if (!same)
@@ -351,45 +433,53 @@ $(document).ready(function() {
                 alert("CSV row length is not the same. Please try again.");
                 $('#data textarea').focus();                
             }
-            if (!allnumeric)
+            if (nonnumeric)
             {
                 alert("Not all numeric values for non-header data. Please try again.");
                 $('#data textarea').focus();                                
             }
-            if (same && allnumeric)
+            // make sure have at least two rows
+            if (numcol < 2)
+            {
+                alert("Need at least 2 rows of data. Please try again.");
+                $('#data textarea').focus();                                                
+            }
+            if (same && !nonnumeric)
             {
                 if (hasheader)
                 {
-                    columnname_array = csv_array[0];
-                    console.log(columnname_array);
+                    columnname_array = [];
+                    for (var i = 0; i < csv_array.length; i++)
+                    {
+                        columnname_array.push(csv_array[i][0]);
+                        csv_array[i] = csv_array[i].slice(1);
+                        console.log(csv_array[i]);
+                    }
                 }
                 else
                 {
                     columnname_array = [];
-                    for (var i = 0; i < csv_array[0].length; i++)
-                        columnname_array.push("");
+                    for (var i = 0; i < csv_array.length; i++)
+                        columnname_array.push('');
                 }
-                numcol = columnname_array.length;
+                numobs = csv_array[0].length;
                 series_array = [];
-                for (var i = hasheader; i < numseries + hasheader; i++)
+                for (var i = 0; i < numcol; i++)
                 {
                     series_array.push(csv_array[i]);
                 }
-                console.log(series_array);
-                console.log(numseries);
-                console.log(numcol);
-                for (var i = 0; i < numseries; i++)
+                for (var i = 0; i < numcol; i++)
                 {
-                    for (var j = 0; j < numcol; j++)
+                    for (var j = 0; j < numobs; j++)
                     {
                         series_array[i][j] = parseFloat(series_array[i][j]);
                     }
                 }
                 updateTable();
-                //redraw();
+                redraw();
                 //drawLabels();
             }
-        }*/
+        }
     });
 /*
     // check if has negative numbers to change positions
@@ -425,60 +515,212 @@ $(document).ready(function() {
         wrap = 0;
     });
 
-    // ancillary functions called above
+    // settings for appearance of lines
+    $('#linepts,#line,#pts,#smoothpts,#smooth').click(function() {
+        lineoptionindex = $('.lineoptions a').index(this);
+        $('.lineoptions a').removeClass('active');
+        $('.lineoptions a:eq('+lineoptionindex+')').addClass('active');
+        setDrawOptions();
+    });
+
+    // drawing functions
+    function setDrawOptions()
+    {
+        switch (lineoptionindex)
+        {
+            case 0:
+                drawoptions = { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: false, colors: colors[colorindex].colors };
+                break;
+            case 1:
+                drawoptions = { nostroke: false, axis: "0 0 1 1", symbol: "", smooth: false, colors: colors[colorindex].colors };
+                break;
+            case 2:
+                drawoptions = { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: false, colors: colors[colorindex].colors };
+                break;
+            case 3:
+                drawoptions = { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: true, colors: colors[colorindex].colors };
+                break;   
+            case 4:
+                drawoptions = { nostroke: false, axis: "0 0 1 1", symbol: "", smooth: true, colors: colors[colorindex].colors };
+                break;   
+        }
+        redraw();
+    }
+
     function redraw()
     {
-        $('path').remove();
-        $('circle').remove();
-        console.log("redraw:", series_array);
-
         var xgraph = padding;
         var ygraph = padding;
         var wgraph = w-padding*2;
         var hgraph = h-padding-bottom;
 
-        r.linechart(xgraph, ygraph, wgraph, hgraph, series_array[0], series_array[1], 
-            { nostroke: false, axis: "0 0 1 1", symbol: "circle", smooth: false, colors: colors[colorindex].colors});
+        // add 0,0 to each column to make sure graph includes origin
+        for (var i = 0; i < numcol; i++)
+            series_array[i].push(0);
+
+        // don't draw if has [-1,-1] or [-1,x] or [x,-1]
+        // only draw if has valid pair
+        // wait for user to fix
+        var indices_len = indices.length;
+        var valid_seriesx_array = [];
+        var valid_seriesy_array = [];
+        // TODO
+        //var selectedcolors = [];
+
+        for (var i = 0; i < indices_len; i++)
+        {
+            if (indices[i][0] != -1 && indices[i][1] != -1)
+            {
+                valid_seriesx_array.push(indices[i][0]);
+                valid_seriesy_array.push(indices[i][1]);
+            }
+        }
+
+        console.log("valid",valid_seriesx_array);
+        console.log("valid",valid_seriesy_array);
+        var seriesx_array = [];
+        var seriesy_array = [];
+        for (var i = 0; i < valid_seriesx_array.length; i++)
+        {
+            seriesx_array.push(series_array[valid_seriesx_array[i]]);
+            seriesy_array.push(series_array[valid_seriesy_array[i]]);
+        }
+        console.log("seriesx_array",seriesx_array);
+        console.log("seriesy_array",seriesy_array);
+
+        // TODO
+        //drawoptions.colors = selectedcolors;
+
+        var numplotseries = valid_seriesx_array.length;
+        if (numplotseries > 0) 
+        {
+            $('path').remove();
+            $('circle').remove();
+            $('text:gt(0)').remove();
+
+            r.linechart(xgraph, ygraph, wgraph, hgraph, seriesx_array, seriesy_array,
+                drawoptions);
+
+            //series_array = [[1,2,3],[3.36, 3.38, 4.32],[2,3,4],[3.36, 3.38, 4.32],[3,4,5],[3.36, 3.38, 4.32],[4,5,6],[3.36, 3.38, 4.32],[5,6,7],[3.36, 3.38, 4.32]];
+
+            //r.linechart(xgraph, ygraph, wgraph, hgraph, [series_array[0],series_array[2],series_array[4],series_array[6],series_array[8]], [series_array[1],series_array[3],series_array[5],series_array[7],series_array[9]], 
+            //    drawoptions);
+
+            //r.linechart(xgraph, ygraph, wgraph, hgraph, series_array[indices[0]], series_array[indices[1]], 
+            //    drawoptions);
+            //series_array = [[1,2,3],[3.36, 3.38, 4.32]];
+
+            var pathchar = 'L';
+            // remove 0,0 and last circle and segment of path
+            if (lineoptionindex == 0 || lineoptionindex == 2 || lineoptionindex == 3)
+            {
+                pathchar = (lineoptionindex == 3) ? 'C' : 'L';
+                for (var i = 0; i < numplotseries; i++)
+                {
+                    var pathnum = i + 2;
+                    var pathnum2 = pathnum + 1;
+                    var numcircle1 = $('svg path:eq('+pathnum+')~circle').length;
+                    var numcircle2 = $('svg path:eq('+pathnum2+')~circle').length;
+                    console.log("numcircle1",numcircle1,"numcircle2",numcircle2);
+                    var diff = numcircle1 - numcircle2;
+                    console.log("diff",diff);
+                    while (diff > numobs)
+                    {
+                        console.log("deleting");
+                        var diffmin1 = diff - 1;
+                        // this is the tricky css selector - last circle before last path
+                        $('svg path:eq('+pathnum+')~circle:eq('+diffmin1+')').remove();
+                        var d = $('svg path:eq('+pathnum+')').attr('d');
+                        var substring = d.substring(0,d.lastIndexOf(pathchar));
+                        //console.log(substring);
+                        $('svg path:eq('+pathnum+')').attr('d',substring);
+                        numcircle1 = $('svg path:eq('+pathnum+')~circle').length;
+                        numcircle2 = $('svg path:eq('+pathnum2+')~circle').length;
+                        console.log("numcircle1",numcircle1,"numcircle2",numcircle2);
+                        
+                        diff = numcircle1 - numcircle2;
+                        console.log("diff",diff);
+                        //console.log($('svg path:last').attr('d'));
+                    }
+                }
+                if (lineoptionindex == 2)
+                {
+                    $('svg path:last').remove();
+                    $('svg path:last').remove();
+                }
+            }
+            else
+            {
+                pathchar = (lineoptionindex == 4) ? 'C' : 'L';
+                var re = new RegExp(pathchar,"g");
+
+                for (var i = 0; i < numplotseries; i++)
+                {
+                    var pathnum = i + 2;
+                    var d = $('svg path:eq('+pathnum+')').attr('d');
+                    // add one for initial M
+                    console.log("numpts",d.match(re).length + 1);
+                    console.log("numobs",numobs);
+
+                    while ((d.match(re).length + 1) > numobs)
+                    {
+                        var substring = d.substring(0,d.lastIndexOf(pathchar));
+                        $('svg path:eq('+pathnum+')').attr('d',substring);
+                        // reset d now that it's been changed
+                        d = $('svg path:eq('+pathnum+')').attr('d');
+                    }
+                }
+            }
+
+            // remove 0,0 
+            for (var i = 0; i < numcol; i++)
+                series_array[i].pop();
+
+        }
+        
         //drawValueLabels();
     }
-/*
+
     // based on csv edit, update table edit
     function updateTable()
     {
         while($('#data .columnname td').length < numcol)
         {
-            var newheader = $('#data .columnname');
-            var newseries = $('#data .series');
+            var newheader = $('#data tr.columnname');
+            var newobs = $('#data tr.obs');
+            var newobshtml = $('#data tr.obs td:last').html();
             newheader.append(headerhtml);
-            newseries.append(serieshtml);
+            newobs.append("<td class='col'>"+newobshtml+"</td>");
         }
+        // make droppable
+        $('#data tr.columnname input').droppable(drpOptions);
+
+        console.log("numcol",numcol);
         while($('#data .columnname td').length > numcol)
         {
-            $('#data .columnname td:last').remove();
-            $('#data .series td:last-child').remove();          
+            $('#data tr.columnname td:last').remove();
+            $('#data tr.obs td:last-child').remove();          
         }
-        console.log(numseriesold);
-        console.log(numseries);
 
-        while (numseriesold < numseries) 
+        while (numobsold < numobs) 
         {
-            $('#data table').append('<tr class="series">'+$('#data tr:eq(1)').html()+'</tr>');
-            numseriesold++;
+            $('#data table').append('<tr class="obs">'+$('#data tr:last').html()+'</tr>');
+            numobsold++;
         }
-        while (numseriesold > numseries && numseriesold > 1)
+        while (numobsold > numobs && numobs > 1)
         {
             $('#data tr:last').remove();
-            numseriesold--;
+            numobsold--;
         }
 
         var i = 0, j = 0;
-        $('#data input[name=series]').each(function(index) {
+        $('#data input[name=obs]').each(function(index) {
             $(this).val(series_array[i][j]);
-            j++;
-            if (j==numcol)
+            i++;
+            if (i==numcol)
             {
-                i++;
-                j = 0;
+                j++;
+                i = 0;
             }
         });
 
@@ -487,7 +729,7 @@ $(document).ready(function() {
             $(this).val(columnname_array[i]);
             i++;
         });
-    }*/
+    }
 
     function setInputToArray(input_array, name, pos)
     {

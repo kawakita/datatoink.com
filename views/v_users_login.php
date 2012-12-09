@@ -21,8 +21,6 @@
 		<br>
 	<? endif; ?>
 
-	<input class="span2" type="text" placeholder="Email" name="email">
-	<input class="span2" type="password" placeholder="Password" name="password">
-	<button type="submit" class="btn" id="login">Log in</button>
+
 
 </form>
