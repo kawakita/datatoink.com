@@ -24,7 +24,7 @@
     <br>
     <h3 class="features">See trends for multiple data series</h3>
     <p class="center">Dynamically change the relationship and look of the line</p>
-    <a href="/visualize/bar/"><img src="/img/line.png"></a>
+    <a href="/visualize/line/"><img src="/img/line.png"></a>
  </div>
 
 
