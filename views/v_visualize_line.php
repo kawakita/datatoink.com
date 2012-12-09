@@ -6,7 +6,7 @@
     <ul class="nav nav-tabs primary">
         <li><a href="#canvas" data-toggle="tab">Canvas</a></li>
         <li><a href="#data" data-toggle="tab">Data</a></li>
-        <li><a href="#save" data-toggle="tab">Save</a></li>
+        <!--<li><a href="#save" data-toggle="tab">Save</a></li>-->
     </ul>
     <div class="tab-content">       
         <div class="tab-pane" id="canvas">
@@ -18,8 +18,8 @@
                     <span class="fieldname">Title</span> 
                     <input type="text" name="title" placeholder="Title">
                     <br>
-                    <span class="fieldname">Subtitle</span> 
-                    <input type="text" name="subtitle" placeholder="Subtitle"> 
+                    <!--<span class="fieldname">Subtitle</span> 
+                    <input type="text" name="subtitle" placeholder="Subtitle"> -->
                 </div>
             </div>           
         </div>
@@ -99,10 +99,11 @@
                 </div>
             </div>
         </div>
+        <!--
         <div class="tab-pane" id="save">
             <div class="tab-content">
                 <br>
-                <? if($user): ?>
+                <? //if($user): ?>
 
                 <form method='POST' action='/visualize/save' id="saveform">
                     <span class="fieldname">Save Title As</span> 
@@ -110,9 +111,10 @@
                     <button class="btn" type="submit" id="save">Save</button>
                 </form>
 
-                <? else: ?>
+                <? //else: ?>
                     <p>Please log in or sign up to save your graphs.</p>
-                <? endif; ?>
-        </div>        
+                <? //endif; ?>
+        </div>  
+        -->      
     </div>
 </div>
