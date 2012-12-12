@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!-- saved from url=(0020)http://p2.t-odd.com/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>t-odd.com</title>
+	
+	<!-- CSS libraries -->
+	<link href="./index_files/bootstrap.min.css" rel="stylesheet" media="screen">
+	<script src="./index_files/jquery-latest.js"></script>
+	<script src="./index_files/bootstrap.min.js"></script>
+  <script src="./index_files/bootstrap-carousel.js"></script>
+
+	<!-- responsive CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link href="./index_files/bootstrap-responsive.css" rel="stylesheet">
+
+  <!-- CSS -->
+  <link href="./index_files/homepg.css" rel="stylesheet">
+
+	<!-- Controller Specific JS/CSS -->
+	<link rel="stylesheet" type="text/css" href="./index_files/homepg.css">	
+
+  <script>
+      $(document).ready(function() {
+        $('.carousel').each(function() {          
+          $(this).carousel({
+            interval: false;
+          });
+        });
+      });
+  </script>
+
+</head>
+
+<body>	
+  <div id="wrap">
+    <div id="page-left-shadow">
+    </div>
+    <div id="page-right-shadow">
+    </div>
+    <div id="inner-wrap">
+      <!-- navbar container -->
+    	<div class="navbar navbar-inverse">
+    	  <div class="navbar-inner">
+    	    <div class="container">
+
+            <!-- logo -->
+    	      <a class="brand" href="./index_files/index.html"><b>t-odd</b></a>
+
+              <!-- navbar content -->
+              <ul class="nav">
+                <li class="brand"></li>
+                <a href="http://localhost/visualize">
+                  <li class="brand">About</li>
+                </a>
+                <a href="http://localhost/visualize">
+                  <li class="brand">Contact</li>
+                </a> 
+                <a href="http://localhost/visualize">
+                  <li class="brand">Resume</li>
+                </a>   
+                <a href="http://localhost/visualize">
+                  <li class="brand">Projects</li>
+                </a>               
+              </ul>
+              <!-- navbar content end -->
+          </div>
+    	  </div>
+    	</div>
+      <!-- navbar container end -->
+
+      <!-- for users not logged in -->
+        <!-- carousel container -->
+        <div id="myCarousel" class="carousel slide">
+          <div class="carousel-inner">
+            <div class="item active">
+              <img src="./index_files/bench.jpg" alt="t-odd on bench">
+              <div id="home" class="carousel-caption">
+                <p class="lead">&nbsp;&nbsp;home page of</p> 
+                <h1>Todd Kawakita</h1> 
+              </div>
+            </div>
+            <div class="item">
+              <img src="./index_files/squished.jpg" alt="squished on a building">
+            </div>
+          </div>
+          <a class="left carousel-control" href="http://twitter.github.com/bootstrap/examples/carousel.html#myCarousel" data-slide="prev">‹</a>
+          <a class="right carousel-control" href="http://twitter.github.com/bootstrap/examples/carousel.html#myCarousel" data-slide="next">›</a>
+
+        </div>
+        <!--
+        <div id="myCarousel" class="carousel">
+          <div class="carousel-inner">
+            <div class="item">
+              <img src="./index_files/bench.jpg" alt="t-odd on bench">
+              <div class="container">
+                <div class="carousel-caption">
+                  <h1>Example headline</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        -->
+        <!-- carousel container end -->
+      <!-- for users logged in -->
+
+      <!-- footer and closing div -->
+      <footer class="navbar navbar-inverse">
+        <div class="wrapper navbar-inner">
+          <div class="container">
+            <div class="about pull-right">
+              © t-odd 2012
+            </div>
+            <div class="clear">
+            </div>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+</body>
+</html>

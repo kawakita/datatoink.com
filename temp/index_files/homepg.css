@@ -1,0 +1,160 @@
+body {
+  background-color: #E2E2E2;
+}
+
+#wrap {
+  max-width: 1500px;
+  min-width: 1024px;
+  margin: 0 auto;
+  position: relative;
+  height: auto;
+  min-height: 100%
+}
+
+#page-right-shadow {
+  right: -8px;
+  top: 0px;
+  position: absolute;
+  background-position: -20px 0;
+  background-repeat: repeat-y;
+  width: 8px;
+  height: 100%;
+  background-color: transparent;
+  background-image: url(shadow.png);
+  z-index: -1;
+}
+
+#page-left-shadow {
+  left: -8px;
+  top: 0px;
+  position: absolute;
+  background-position: 0px 0;
+  background-repeat: repeat-y;
+  width: 8px;
+  height: 100%;
+  background-color: transparent;
+  background-image: url(shadow.png);
+  z-index: -1;
+}
+
+.navbar-inner {
+  height: 80px;
+    -webkit-border-radius: 0px;
+   -moz-border-radius: 0px;
+        border-radius: 0px;
+
+}
+
+.navbar {
+  margin-bottom: 0px;
+}
+
+.navbar-inner .container {
+  height: 80px;
+}
+
+.navbar-inner .container a, ul {
+  vertical-align: middle;
+}
+
+.container {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.navbar .brand {
+  padding: 26px 26px 26px;
+  margin-left: -26px;
+  font-size: 26px;
+}
+
+.container .logo {
+  font-weight: bold;
+}
+
+.carousel {
+  margin-bottom: 0px;
+}
+
+.carousel .container {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.carousel {
+  max-width: 100%;
+  height: auto;
+}
+
+.carousel img {
+  text-align: center;
+}
+
+/*@media screen and (min-width:px) { */
+.carousel-caption h1 { 
+    font-size: 50px; 
+}
+/*}*/
+
+#home.carousel-caption {
+  background-color: transparent;
+  position: absolute;
+  padding: 30px;
+  margin-bottom: 53%;
+  margin-left: 23%;
+}
+
+.carousel-caption h1 {
+  margin: 0;
+  line-height: 1.25;
+  color: #fff;
+  text-shadow: 0 1px 1px rgba(0,0,0,.4);
+}
+
+.hero-unit {
+  padding: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 40px;
+  vertical-align: middle;
+  background: rgba(238, 238, 238, 0.9);
+}
+
+#mission {
+  font-size: 14px;
+}
+
+.pull-right {
+    float: right;
+}
+
+.btn {
+  vertical-align: top;
+}
+
+footer .wrapper {
+  color: #999;
+  /*color: #969696;*/
+  /*background-color: #F0F0F0;*/
+  /*border-top: 2px solid #E1E1E1;*/
+  /*background-color: transparent;*/
+  border: none;
+  height: 40px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 20px;
+}
+footer .wrapper .about {
+  padding: 0px;
+  padding-top: 10px;
+}
+/* using more specific rule to override */
+footer .navbar-inner .container {
+  height: 40px;
+}
