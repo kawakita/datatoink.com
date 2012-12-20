@@ -93,11 +93,8 @@
                 </form>
 
                 <? else: ?>
-                    <p>Please <a id="savelogin">log in</a> or <a id="savesignup">sign up</a> to save your graphs.</p>
+                    <p>Please log in or sign up to save your graphs.</p>
                 <? endif; ?>
-
-                <span id="save_id" style="display: none;"><?=$save_id;?></span>
         </div>
     </div>
-</div>
 </div>

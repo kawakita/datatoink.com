@@ -25,45 +25,8 @@ $(document).ready(function() {
     console.log(colors[0].colors);
     var colorindex = 0;
 
-    // global data
-    var form_data = {
-        type: "bar",
-        series_array: [[3.36, 3.38, 4.32, 3.74, 3.49, 3.68, 3.43, 3.35, 3.44, 3.94, 3.99, 3.78]],
-        columnname_array: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        header: 1,
-        title: "Average Rainfall in Boston (inches)",
-        subtitle: "2011",
-        numcol: 12,
-        numseries: 1,
-        structure: 1,
-        seriesx_array: -1,
-        seriesy_array: -1
-    };
-    console.log("form_data1", form_data);
-
-    // get save_id and change form_data
-    var save_id = $('#save_id').text();
-    var url_save_id = '/visualize/load/' + save_id;
-    console.log(url_save_id);
-
-    if (save_id != 0)
-    {
-        console.log("here");
-        $.ajax({
-            async: false, // need to make async false
-            type: "POST",
-            url: url_save_id,
-            success: function(response)
-            {
-                //console.log("response", response);
-                form_data = jQuery.parseJSON(response);  
-                console.log("form_data", form_data);
-            }
-        });
-    }
-
     // set title
-    var title = form_data.title;
+    var title = "Average Rainfall in Boston (inches)";
     $('#canvas input[name=title]').val(title);
     r.text(w/2, padding, title).attr(titletxtattr);
 
@@ -74,7 +37,7 @@ $(document).ready(function() {
     });
 
     // set subtitle
-    var subtitle = form_data.subtitle;
+    var subtitle = "2011";
     $('#canvas input[name=subtitle]').val(subtitle);
     r.text(w/2, padding*2, subtitle).attr(subtitletxtattr);
 
@@ -95,17 +58,14 @@ $(document).ready(function() {
     var serieshtml = series.html();
 
     // number of series
-    var numseries = form_data.numseries;
-    var numseriesold = form_data.numseries;
-
-    // stacked or grouped
-    var stacked = form_data.structure;
+    var numseries = 1;
+    var numseriesold = 1;
 
     // set up chart with example data
     //var columnname_array = ['Jan','Feb'];
     //var series_array = [[1,1]];    
-    var columnname_array = form_data.columnname_array;
-    var series_array = form_data.series_array;
+    var columnname_array = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var series_array = [[3.36, 3.38, 4.32, 3.74, 3.49, 3.68, 3.43, 3.35, 3.44, 3.94, 3.99, 3.78]];
     //var columnname_array = ['Jan', 'Feb', 'Mar'];
     //var series_array = [[3.36, 3.38, 4.32]];
 
@@ -120,17 +80,8 @@ $(document).ready(function() {
         series.append(serieshtml);
     }
 
-    while($('#data .series').length < numseries)
-    {
-        series = $('#data tr:last');
-        serieshtml = series.html();
-
-        series.after("<tr class='series'>" + serieshtml +"</tr>");
-    }
-
-    setInputToArray(columnname_array, "columnname");  
-    for (var i = 0; i < numseries; i++)  
-        setInputToArray(series_array[i], "series", i);
+    setInputToArray(series_array[0], "series");
+    setInputToArray(columnname_array, "columnname");
 
     redraw();
     drawLabels();
@@ -281,6 +232,7 @@ $(document).ready(function() {
     });
 
     // buttons to indicate active status of stacked vs. grouped bar charts
+    var stacked = 1;
     $('a#stacked').click(function() {
         $(this).addClass('active');
         $('a#grouped').removeClass('active');
@@ -317,7 +269,7 @@ $(document).ready(function() {
         //USA,CHN,JPN,DEU,FRA,BRA,GBR,ITA,RUS,IND,CAN,ESP,AUS,MEX,KOR,IDN,NLD,TUR,CHE,SAU,SWE,POL,BEL,NOR,ARG,AUT,ZAF,ARE,THA,DNK,COL,IRN,VEN,GRC,MYS,FIN,CHL,HKG,ISR,SGP
         //\n
         //15094000,7318499,5867154,3570556,2773032,2476652,2431589,2194750,1857770,1847982,1736051,1490810,1371764,1155316,1116247,846832,836257,773091,635650,576824,538131,514496,511533,485803,445989,418484,408237,360245,345649,332677,331655,331015,316482,298734,278671,266071,248585,243666,242929,239700\n");
-    var hasheader = form_data.header;
+    var hasheader = 1;
     $('#data input[name=hasheader]').click(function() {
         if (this.checked)
             hasheader = 1;
@@ -483,9 +435,6 @@ $(document).ready(function() {
         var hgraph = h-padding-bottom;
 
         var negcnt = hasNegative();
-        console.log("stacked",stacked);
-        console.log("negcnt",negcnt);
-
         if (negcnt)
         {
             // generate indicator array of neg values
@@ -884,24 +833,12 @@ $(document).ready(function() {
         });
     }
 
-    function setInputToArray(input_array, name, pos)
-    {
-        if (pos)
-            $('#data tr.'+name+':eq('+pos+') '+'input[name='+name+']').each(function(index) {
-                $(this).val(input_array[index]);
-            });
-        else
-            $('#data tr.'+name+' input[name='+name+']').each(function(index) {
-                $(this).val(input_array[index]);
-            });            
-    }
-
-    /*function setInputToArray(input_array, name)
+    function setInputToArray(input_array, name)
     {
         $('#data input[name='+name+']').each(function(index) {
             $(this).val(input_array[index]);
         });
-    }*/
+    }
 
     function drawLabels() {
         $('svg text[font="10px \'Helvetica Neue\'"]').remove();
@@ -1023,14 +960,13 @@ $(document).ready(function() {
         var action = $('#saveform').attr('action');
         console.log(action);
 
-        var series_array_string = "[";
+        var series_array_string = "";
         for (var i = 0; i < series_array.length; i++)
         {
             series_array_string += "[" + series_array[i].toString() + "]"; 
             if (i < series_array.length - 1)
                 series_array_string += ",";
         }
-        series_array_string += "]";
 
         var columnname_array_string = "[" + columnname_array.toString() + "]";
 
@@ -1042,7 +978,7 @@ $(document).ready(function() {
             title: $('#canvas input[name=title]').val(),
             subtitle: $('#canvas input[name=subtitle]').val(),
             numcol: parseInt($('#data input[name=numcol]').val()),
-            numseries: numseries,
+            numseries: 0,
             structure: stacked,
             seriesx_array: -1,
             seriesy_array: -1

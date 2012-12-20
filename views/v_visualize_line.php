@@ -6,7 +6,7 @@
     <ul class="nav nav-tabs primary">
         <li><a href="#canvas" data-toggle="tab">Canvas</a></li>
         <li><a href="#data" data-toggle="tab">Data</a></li>
-        <li><a href="#save" data-toggle="tab">Save</a></li>
+        <!--<li><a href="#save" data-toggle="tab">Save</a></li>-->
     </ul>
     <div class="tab-content">       
         <div class="tab-pane" id="canvas">
@@ -99,16 +99,10 @@
                 </div>
             </div>
         </div>
+        <!--
         <div class="tab-pane" id="save">
             <div class="tab-content">
                 <br>
-                <p>
-                    <b>
-                        Save functionality for the line chart is coming soon! 
-                    </b>
-                </p>
-
-                <!--
                 <? //if($user): ?>
 
                 <form method='POST' action='/visualize/save' id="saveform">
@@ -118,13 +112,9 @@
                 </form>
 
                 <? //else: ?>
-                    <p>Please <a id="savelogin">log in</a> or <a id="savesignup">sign up</a> to save your graphs.</p>
+                    <p>Please log in or sign up to save your graphs.</p>
                 <? //endif; ?>
-
-                <span id="save_id" style="display: none;"><?=$save_id;?></span>
-                -->
-
         </div>  
+        -->      
     </div>
-</div>
 </div>
