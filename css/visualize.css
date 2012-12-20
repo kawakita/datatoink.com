@@ -117,3 +117,9 @@ i.icon-share-alt {
 footer .wrapper {
     min-height: 100px;
 }
+
+a#savelogin:hover, a#savesignup:hover {
+    cursor: pointer;
+}
+
+
