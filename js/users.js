@@ -24,6 +24,17 @@ $(document).ready(function() {
 				{
 					$('#loginmodal').modal('hide');
 					$('.nav.pull-right').html("<li class='brand rightside' style='color:#999999;''>Hi, " + response[1] + "!</li><a href=''><li class='brand rightside'>Log Out</li></a>");
+					var pathname = window.location.pathname;
+					console.log(pathname);
+					if (pathname=="/visualize" || pathname=="/visualize/")
+					{
+						window.location.reload();
+					}
+					if (pathname=="/visualize/bar" || pathname=="/visualize/bar/")
+					{
+						console.log("yes");
+						$('#save .tab-content').html("<br><form method='POST' action='/visualize/save' id='saveform'><span class='fieldname'>Save Title As</span><input type='text' name='title' placeholder='Name'><button class='btn' type='submit' id='save'>Save</button></form>");
+					}
 				}
 				else {
 					$('.modal-body p.error').text('Invalid log in. Please try again.');
@@ -114,6 +125,16 @@ $(document).ready(function() {
 		});
 		return false;
 	});
+
+	$('a#savelogin').click(function() {
+		$('#loginmodal').modal('show');
+	});
+
+
+	$('a#savesignup').click(function() {
+		$('#signupmodal').modal('show');
+	});
+
 
 	/*$('#logout').live('click', function() {
 		var action = $('#logout').attr('href');
